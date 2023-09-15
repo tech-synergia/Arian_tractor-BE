@@ -5,7 +5,8 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 
-const PORT = process.env.PORT
+const connectDb = require("./db");
+const PORT = process.env.PORT;
 const app = express();
 
 app.use(express.urlencoded({ extended: true }))
@@ -16,9 +17,11 @@ app.use(
     })
 );
 
+app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(cors());
 
 app.use(`/api/v1/`, require("./route/blogRoute"))
+app.use(`/api/v1/image/`, require("./route/imageRouter"))
 
 app.all("*", (req, res, next) => {
     res.status(404).json({ msg: `requested path not found, try '/api/v1/'` });
@@ -26,5 +29,7 @@ app.all("*", (req, res, next) => {
   });
 
 app.listen( PORT,async () => {
+    await connectDb(process.env.MONGO_URL);
+    console.log("Connected to MongoDB...");
     console.log(`server is started @ http://localhost:${PORT}`)
 })
