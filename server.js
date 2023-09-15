@@ -22,6 +22,7 @@ app.use(cors());
 
 app.use(`/api/v1/`, require("./route/blogRoute"))
 app.use(`/api/v1/image/`, require("./route/imageRouter"))
+app.use(`/api/v1/contact/`, require("./route/contactUsRoute"))
 
 app.all("*", (req, res, next) => {
     res.status(404).json({ msg: `requested path not found, try '/api/v1/'` });
